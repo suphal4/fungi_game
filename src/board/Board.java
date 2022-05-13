@@ -90,14 +90,15 @@ public class Board{
         if (decayPile.size() == 4){
             decayPile.clear();
         }
-        if (getForest().getElementAt(7)!= null){
-            decayPile.add(getForest().getElementAt(7));
-            forest.removeCardAt(1);
-        } 
-        else{
-            decayPile.add(getForest().getElementAt(6));
-            forest.removeCardAt(2);
-        }
+         decayPile.add(forest.removeCardAt(1));
+//        if (getForest().getElementAt(7)!= null){
+//            decayPile.add(getForest().getElementAt(7));
+//            forest.removeCardAt(1);
+//        } 
+//        else{
+//            decayPile.add(getForest().getElementAt(6));
+//            forest.removeCardAt(2);
+//        }
         
     }
 }

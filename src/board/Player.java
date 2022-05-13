@@ -39,7 +39,7 @@ public class Player extends Board{
         d.add(new Stick());
     }
     public void removeSticks(int stcks) {
-        this.sticks = this.sticks - stcks;
+        sticks = sticks - stcks;
         int a = 0;
         for (int i=0; i<d.size();i++){
             if (d.getElementAt(i).getType().equals(CardType.STICK)){
@@ -62,20 +62,22 @@ public class Player extends Board{
     public void addCardtoDisplay(Card crd) {
         d.add(crd);
     }
-    public boolean takeCardFromTheForest(int x) {
-//        int bc=d.size()+h.size();
-        getHandLimit();
-//        if (h.size()==handlimit && (!(getForest().getElementAt(8-x).getType()).equals(CardType.BASKET) || !(getForest().getElementAt(8-x).getType()).equals(CardType.STICK))){
-//            return false;
-//        }
-        if (x>2 && getStickNumber()>=(x-2) && x<=8){
-            if (getForest().getElementAt(8-x).getType().equals(CardType.BASKET)){
+    public boolean takeCardFromTheForest(int x) 
+{
+if (h.size()==handlimit && ((getForest().getElementAt(8-x).getType())!=(CardType.BASKET) || (getForest().getElementAt(8-x).getType())!=(CardType.STICK))){
+            return false;
+        }
+        if ((x>2 && x<=8) && getStickNumber()>=(x-2) ){
+//               Card card=getForest().removeCardAt(8-x);
+            if (getForest().getElementAt(8-x).getType()==(CardType.BASKET)){
+                addCardtoHand(getForest().removeCardAt(8-x));
                 getHandLimit();
+                removeSticks(x-2);
                 return true;
             }
             
  
-            else if (getForest().getElementAt(8-x).getType().equals(CardType.STICK)){
+            else if (getForest().getElementAt(8-x).getType()==(CardType.STICK)){
                 addSticks(1);
                 getForest().removeCardAt(8-x);
                 removeSticks(x-2);
@@ -91,13 +93,14 @@ public class Player extends Board{
             }
         }
         else if ( x == 2 || x==1){
-            if (getForest().getElementAt(8-x).getType().equals(CardType.BASKET)){
+            if (getForest().getElementAt(8-x).getType()==(CardType.BASKET)){
+                addCardtoHand(getForest().removeCardAt(8-x));
                 getHandLimit();
                 return true;
             }
 
  
-            else if (getForest().getElementAt(8-x).getType().equals(CardType.STICK)){
+            else if (getForest().getElementAt(8-x).getType()==(CardType.STICK)){
                 addSticks(1);
                 getForest().removeCardAt(8-x);
                 return true;
@@ -110,17 +113,57 @@ public class Player extends Board{
                 return false;
             }
         }
-//        int mc=d.size()+h.size();
-//        if(bc==mc){
-//            return false;
-//        }
+
         return false;
     }
+//    {
+//
+//     if ((handlimit-h.size())>0)
+//        {
+//           if(x<=2)
+//            {
+//                Card card= Board.getForest().removeCardAt(x);
+//                if(card.getType()==CardType.BASKET)
+//                {
+//                    addCardtoDisplay(card);
+//                    getHandLimit();
+//                }
+//                else{addCardtoHand(card);}
+//                return true;
+//            }
+//            else if (x<=8)
+//            {
+//                if (sticks>=x-2)
+//                {   
+//                    Card card=Board.getForest().removeCardAt(x);
+//                    if (card.getType()==CardType.BASKET)
+//                     {
+//                        addCardtoDisplay(card);
+//                        getHandLimit();
+//                        removeSticks(x-2);
+//                        }
+//                    else
+//                    {
+//                        addCardtoHand(card);
+//                        removeSticks(x-2);
+//                    }
+//                    return true;
+//                }
+//                else
+//                   return false;
+//                
+//            }
+//        }
+//         return false;
+//
+//    }
 
     public boolean takeFromDecay() {
+        
         getHandLimit();
         getHandLimit();
         getHandLimit();
+
         if (getDecayPile().size()>0 && getDecayPile().size()<=4 ){
             int x=0;
             for (int i=0; i<getDecayPile().size();i++){
@@ -128,15 +171,18 @@ public class Player extends Board{
                     x=x+1;
                 }
             }
-            if (h.size()+getDecayPile().size() -x <=handlimit + x*2){
-                for (int i=0; i < getDecayPile().size();i++){
-                    if (getDecayPile().get(i).getType().equals(CardType.BASKET)){
+            if (h.size()+getDecayPile().size() -x <=(handlimit + x*2)){
+                for (int i=0; i < getDecayPile().size();i++)
+                {
+                    Card card=getDecayPile().get(i);
+                    if (getDecayPile().get(i).getType().equals(CardType.STICK)){
                         
-                        addCardtoDisplay(getDecayPile().remove(i));
-                        handlimit = handlimit + 2;
+                        addCardtoDisplay(card);
+
                     }
                     else{
-                        addCardtoHand(getDecayPile().remove(i));
+                        addCardtoHand(card);
+                        getHandLimit();
                     }
                 }        
                 return true;    
@@ -241,16 +287,25 @@ public class Player extends Board{
     }
 
     public boolean sellMushrooms(String str, int s_M) {
+        if (s_M<2){return false;}
         String card_name=str.toLowerCase();
         boolean pass=false; 
         boolean pass1st=false;       
         card_name=str.replaceAll(" ", "");
-        card_name=str.replaceAll("'", "");
+        card_name=str.replaceAll("\\s", "");
         if (card_name.equals("honeyfungus")){
             card_name="HoneyFungus";
             pass=true;
         }
+        else if (card_name.equals("honey fungus")){
+            card_name="HoneyFungus";
+            pass=true;
+        }
         else if (card_name.equals("birchbolete")){
+            card_name="BirchBolete";
+            pass=true;
+        }
+        else if (card_name.equals("birch bolete")){
             card_name="BirchBolete";
             pass=true;
         }
@@ -262,7 +317,15 @@ public class Player extends Board{
             card_name="HenOfWoods";
             pass=true;
         }
+        else if (card_name.equals("hen of woods")){
+            card_name="HenOfWoods";
+            pass=true;
+        }
         else if (card_name.equals("lawyerswig")){
+            card_name="LawyersWig";
+            pass=true;
+        }
+        else if (card_name.equals("lawyers wig")){
             card_name="LawyersWig";
             pass=true;
         }
@@ -282,11 +345,16 @@ public class Player extends Board{
             card_name="TreeEar";
             pass=true;
         }
+        else if (card_name.equals("tree ear")){
+            card_name="TreeEar";
+            pass=true;
+        }
         else{
             return false;
         }
+        
         for (int i=0;i<h.size();i++){
-                if (getHand().getElementAt(i).getName().equals(card_name)){
+                if ((getHand().getElementAt(i).getName()).equals(card_name)){
                     pass1st=true;
                 }
         }
@@ -305,19 +373,19 @@ public class Player extends Board{
                     }
                 }                
             }
-            if (c<s_M){
-                return false;
-            }
-            if ("Porcini".equals(card_name)) { sticks= sticks + s_M*3;}
-            else if ("Shiitake".equals(card_name)) { sticks= sticks + s_M*2 ;}
-            else if ("TreeEar".equals(card_name)) { sticks= sticks + s_M*2 ;}
-            else if ("HoneyFungus".equals(card_name)) { sticks= sticks + s_M*1 ;}
-            else if ("LawyersWig".equals(card_name)) { sticks= sticks + s_M*1 ;}
-            else if ("Morel".equals(card_name)) { sticks= sticks + s_M*4 ;}
-            else if ("HenOfWoods".equals(card_name)) { sticks= sticks + s_M*1 ;}
-            else if ("Chanterelle".equals(card_name)) { sticks= sticks + s_M*2 ;}
-            else if ("BirchBolete".equals(card_name)) { sticks= sticks + s_M*2 ;}
-            for (int i=0;i<s_M;i++){
+            int totalm=s_M;
+
+            if ("Porcini".equals(card_name)) { sticks= sticks + totalm*3;}
+            else if ("Shiitake".equals(card_name)) { sticks= sticks + totalm*2 ;}
+            else if ("TreeEar".equals(card_name)) { sticks= sticks + totalm*2 ;}
+            else if ("HoneyFungus".equals(card_name)) { sticks= sticks + totalm*1 ;}
+            else if ("LawyersWig".equals(card_name)) { sticks= sticks + totalm*1 ;}
+            else if ("Morel".equals(card_name)) { sticks= sticks + totalm*4 ;}
+            else if ("HenOfWoods".equals(card_name)) { sticks= sticks + totalm*1 ;}
+            else if ("Chanterelle".equals(card_name)) { sticks= sticks + totalm*2 ;}
+            else if ("BirchBolete".equals(card_name)) { sticks= sticks + totalm*2 ;}
+            int bsdk=s_M;
+            for (int i=0;i<bsdk;i++){
                 for (int j=0;j<h.size();j++){
                     if (getHand().getElementAt(j).getName().equals(card_name) && getHand().getElementAt(j).getType().equals(CardType.NIGHTMUSHROOM)){
                         h.removeElement(j);
@@ -338,7 +406,7 @@ public class Player extends Board{
                     }
                 }
             }
-            return true;
+            return false;
         }
         return false;
     }
